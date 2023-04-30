@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://o04dw6xu6vp4"]
+[gd_scene load_steps=4 format=3 uid="uid://o04dw6xu6vp4"]
 
 [ext_resource type="Script" path="res://modules/raccoon/objects/projectiles/tail_spin/tail_spin.gd" id="1_17a1q"]
-[ext_resource type="Texture2D" uid="uid://5t1vlbr6vbue" path="res://engine/objects/projectiles/fireball/texture.png" id="2_ridlu"]
 [ext_resource type="Script" path="res://engine/objects/projectiles/projectile_attack.gd" id="3_fre22"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v0toq"]
@@ -14,10 +13,6 @@ script = ExtResource("1_17a1q")
 look_at_player = true
 sprite = NodePath("")
 metadata/_edit_pinned_properties_ = [&"sprite"]
-
-[node name="Texture" type="Sprite2D" parent="."]
-z_index = 1
-texture = ExtResource("2_ridlu")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 disabled = true
@@ -37,7 +32,7 @@ metadata/_edit_lock_ = true
 
 [node name="Timer" type="Timer" parent="."]
 process_callback = 0
-wait_time = 0.4
+wait_time = 0.2
 autostart = true
 
 [connection signal="damaged_player" from="Attack" to="." method="explode"]
