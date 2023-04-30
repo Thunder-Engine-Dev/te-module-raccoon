@@ -2,40 +2,47 @@ extends Powerup
 
 var init: bool = false
 var init2: bool = false
-var pos: float
 
 func appear_process(delta: float) -> void:
 	if init2: return
 	init2 = true
 	
 	var tw = create_tween()
-	tw.tween_property(self, "global_position", position + Vector2(0, -100), 1.0) \
+	tw.tween_property(self, "global_position", position + Vector2(0, -100), 0.8) \
 		.set_ease(Tween.EASE_OUT) \
 		.set_trans(Tween.TRANS_QUAD)
 	tw.tween_callback(func():
 		appear_distance = 0
 	)
-	
-	#appear_distance = max(appear_distance - appear_speed * delta, 0)
-	#position -= Vector2(0, appear_speed).rotated(global_rotation) * delta
-	
+
+
 func motion_process(delta: float, _slide: bool = false) -> void:
 	if init: return
 	init = true
 	
-	var tw = create_tween()
-	tw.tween_callback(func():
-		$Sprite.flip_h = false
-		self.pos += 16
-	)
-	tw.tween_property(self, "position", position + Vector2(96, pos), 0.6) \
-		.set_ease(Tween.EASE_OUT) \
-		.set_trans(Tween.TRANS_SINE)
+	move_loop(0)
+
+
+func move_loop(pos: float):
+	var tw = create_tween().set_parallel(true)
 	tw.tween_callback(func():
 		$Sprite.flip_h = true
-		self.pos += 16
+		pos += 24
 	)
-	tw.tween_property(self, "position", position + Vector2(0, pos), 0.6) \
+	tw.chain().tween_property(self, "position:y", position.y + 24 + pos, 0.6) \
 		.set_ease(Tween.EASE_OUT) \
-		.set_trans(Tween.TRANS_SINE)
-	tw.set_loops()
+		.set_trans(Tween.TRANS_QUAD)
+	tw.tween_property(self, "position:x", position.x + 80, 0.6) \
+		.set_ease(Tween.EASE_IN_OUT) \
+		.set_trans(Tween.TRANS_QUAD)
+	tw.chain().tween_callback(func():
+		$Sprite.flip_h = false
+		pos += 24
+	)
+	tw.chain().tween_property(self, "position:y", position.y + 48 + pos, 0.6) \
+		.set_ease(Tween.EASE_OUT) \
+		.set_trans(Tween.TRANS_QUAD)
+	tw.tween_property(self, "position:x", position.x, 0.6) \
+		.set_ease(Tween.EASE_IN_OUT) \
+		.set_trans(Tween.TRANS_QUAD)
+	tw.chain().tween_callback(move_loop.bind(pos))

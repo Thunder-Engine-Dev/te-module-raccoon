@@ -1,30 +1,55 @@
-[gd_resource type="Resource" script_class="PlayerSuit" load_steps=12 format=3 uid="uid://dp7y0q8qp6pph"]
+[gd_resource type="Resource" script_class="PlayerSuit" load_steps=18 format=3 uid="uid://bp0b8h1elf8gm"]
 
-[ext_resource type="Script" path="res://engine/objects/players/behaviors/player_animation_behavior.gd" id="1_nbcsq"]
-[ext_resource type="SpriteFrames" uid="uid://br1851e3gt1xr" path="res://engine/objects/players/prefabs/animations/mario/animation_mario_green_lui.tres" id="2_5l4qx"]
-[ext_resource type="Script" path="res://modules/raccoon/objects/players/behaviors/player_raccoon_behavior.gd" id="3_g7dwe"]
+[ext_resource type="Script" path="res://modules/raccoon/objects/players/behaviors/raccoon_animation_behavior.gd" id="1_wspk3"]
+[ext_resource type="SpriteFrames" uid="uid://c2x3m8e3m7txx" path="res://modules/raccoon/objects/players/prefabs/animations/mario/animation_mario_raccoon.tres" id="2_8m773"]
+[ext_resource type="PackedScene" uid="uid://o04dw6xu6vp4" path="res://modules/raccoon/objects/projectiles/tail_spin/tail_spin.tscn" id="3_akjpv"]
+[ext_resource type="Script" path="res://engine/objects/players/behaviors/player_projectile_resource.gd" id="3_d13el"]
+[ext_resource type="Script" path="res://engine/scripts/resources/instance_node2d/instance_node2d.gd" id="3_wrxwn"]
+[ext_resource type="AudioStream" uid="uid://b67sglbx888n8" path="res://modules/raccoon/objects/players/prefabs/sounds/tail.wav" id="4_284wd"]
 [ext_resource type="Resource" uid="uid://cmhi4m24voa1d" path="res://engine/objects/players/prefabs/suits/mario/suit_mario_super.tres" id="4_a14q1"]
-[ext_resource type="Script" path="res://modules/raccoon/objects/players/behaviors/player_raccoon_physics_behavior.gd" id="5_obvor"]
-[ext_resource type="Resource" uid="uid://dc1ox1ge2vuxx" path="res://engine/objects/players/prefabs/configs/config_mario_green_lui.tres" id="6_y1hy4"]
+[ext_resource type="Script" path="res://modules/raccoon/objects/players/behaviors/raccoon_spin_behavior.gd" id="7_fodgc"]
+[ext_resource type="Script" path="res://modules/raccoon/objects/players/behaviors/raccoon_physics_behavior.gd" id="7_ggear"]
 [ext_resource type="Resource" uid="uid://513ld6k2bccl" path="res://engine/objects/players/prefabs/shapers/shaper_mario_super.tres" id="7_iyxhp"]
 [ext_resource type="Resource" uid="uid://dgtnm5aove1kg" path="res://engine/objects/players/prefabs/shapers/shaper_mario_small.tres" id="8_3wsjs"]
+[ext_resource type="Resource" uid="uid://rhicphrr05ws" path="res://engine/objects/players/prefabs/configs/config_mario_default.tres" id="8_h8fwb"]
 [ext_resource type="Script" path="res://engine/objects/players/player_suit.gd" id="9_q4tno"]
 [ext_resource type="AudioStream" uid="uid://cpy66lof7ycli" path="res://engine/objects/players/prefabs/sounds/music-die.ogg" id="10_g14eq"]
 [ext_resource type="AudioStream" uid="uid://c4mxnbmb5vv2u" path="res://engine/objects/players/prefabs/sounds/pipe.wav" id="11_tkrcy"]
+
+[sub_resource type="Resource" id="Resource_4gwii"]
+script = ExtResource("3_wrxwn")
+creation_nodepack = ExtResource("3_akjpv")
+trans_offset = Vector2(16, 0)
+trans_inheritances = 7
+trans_rotation = 0.0
+trans_scale = Vector2(1, 1)
+trans_skew = 0.0
+visi_z_index = 0
+visi_z_as_relative = true
+visi_y_sort_enabled = false
+custom_vars = {}
+
+[sub_resource type="Resource" id="Resource_cr4jy"]
+script = ExtResource("3_d13el")
+projectile = SubResource("Resource_4gwii")
+speed = Vector2(0, 0)
+amount = 1
+sound_attack = ExtResource("4_284wd")
 
 [resource]
 script = ExtResource("9_q4tno")
 name = &"raccoon"
 type = 2
 gets_hurt_to = ExtResource("4_a14q1")
-physics_config = ExtResource("6_y1hy4")
-physics_behavior = ExtResource("5_obvor")
+physics_config = ExtResource("8_h8fwb")
+physics_behavior = ExtResource("7_ggear")
 physics_crouchable = true
 physics_shaper = ExtResource("7_iyxhp")
 physics_shaper_crouch = ExtResource("8_3wsjs")
-animation_sprites = ExtResource("2_5l4qx")
-animation_behavior = ExtResource("1_nbcsq")
-behavior_script = ExtResource("3_g7dwe")
+animation_sprites = ExtResource("2_8m773")
+animation_behavior = ExtResource("1_wspk3")
+behavior_resource = SubResource("Resource_cr4jy")
+behavior_script = ExtResource("7_fodgc")
 extra_vars = {}
 sound_hurt = ExtResource("11_tkrcy")
 sound_death = ExtResource("10_g14eq")
