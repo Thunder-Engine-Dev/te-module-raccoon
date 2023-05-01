@@ -35,7 +35,5 @@ process_callback = 0
 wait_time = 0.2
 autostart = true
 
-[connection signal="damaged_player" from="Attack" to="." method="explode"]
-[connection signal="killed_notify" from="Attack" to="." method="explode"]
 [connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="queue_free"]
 [connection signal="timeout" from="Timer" to="." method="queue_free"]

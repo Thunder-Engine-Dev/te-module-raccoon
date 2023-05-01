@@ -61,8 +61,8 @@ func _sprite_finish() -> void:
 
 func _glided() -> void:
 	if !sprite: return
-	if sprite.animation in [&"jump", &"jump_tail"]: sprite.play(&"jump_tail")
-	if sprite.animation in [&"p_jump", &"p_fly"]: sprite.play(&"p_fly")
+	if sprite.animation in [&"jump", &"jump_tail"]: sprite.play(&"jump_tail"); sprite.frame = 0
+	if sprite.animation in [&"p_jump", &"p_fly"]: sprite.play(&"p_fly"); sprite.frame = 0
 
 
 func _animation_process(delta: float) -> void:
@@ -90,10 +90,12 @@ func _animation_process(delta: float) -> void:
 			sprite.play(&"swim")
 		else:
 			if !suit.extra_vars.p_running:
-				if sprite.animation != &"jump_tail":
-					sprite.play(&"jump")
+				if sprite.animation == &"jump_tail": return
+				sprite.play(&"jump_tail" if player.speed.y > 0 else &"jump")
+				if player.speed.y > 0: sprite.frame = 1
 			elif sprite.animation != &"p_fly":
-				sprite.play(&"p_jump")
+				sprite.play(&"p_fly" if player.speed.y > 0 else &"p_jump")
+				if player.speed.y > 0: sprite.frame = 1
 	# Warping
 	else:
 		match player.warp_dir:

@@ -36,20 +36,17 @@ func _p_meter_process(delta: float) -> void:
 	if suit.extra_vars.p_running:
 		if hud:
 			hud_fly_icon.texture.speed_scale = 1
-			hud_progress.value = 6
 		if !suit.extra_vars.p_flying:
-			if !player.running || abs(player.speed.x) < config.walk_max_walking_speed:
-				p_counter -= 1
+			if !player.running || (player.is_on_floor() && abs(player.speed.x) < config.walk_max_walking_speed):
+				p_counter = floor(p_fly_counter / 1.75) if p_fly_counter > 1 else p_counter - 1
 				suit.extra_vars.p_running = false
-			if !player.is_on_floor():
-				suit.extra_vars.can_fly = true
-				p_fly_counter = 175 # about 3.5 seconds of free flying time
-			else:
-				if !player.running:
-					p_counter = 80
-				suit.extra_vars.can_fly = false
+			suit.extra_vars.can_fly = !player.is_on_floor()
+			# about 3.5 seconds of free flying time
+			p_fly_counter = 0 if player.is_on_floor() else 175
+			hud_progress.value = ceili(p_counter / 20)
 		else:
 			p_fly_counter = max(p_fly_counter - 50 * delta, 0)
+			hud_progress.value = ceili(p_fly_counter / 31)
 			if p_fly_counter < 1:
 				suit.extra_vars.p_flying = false
 				if !player.is_on_floor():
@@ -75,7 +72,7 @@ func _p_meter_process(delta: float) -> void:
 	
 	# HUD behavior
 	if !hud: return
-	hud_progress.value = ceili(p_counter / 17)
+	hud_progress.value = ceili(p_counter / 20)
 	hud_fly_icon.texture.speed_scale = 0
 	hud_fly_icon.texture.current_frame = 0
 

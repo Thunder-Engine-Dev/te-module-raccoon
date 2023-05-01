@@ -103,7 +103,7 @@ func _movement_y(delta: float) -> void:
 				suit.extra_vars.p_flying = true
 			if (!suit.extra_vars.can_fly && player.speed.y > -50) || \
 				suit.extra_vars.p_flying:
-					jump_glide_timer = 0.4
+					jump_glide_timer = 0.34
 					player.emit_signal(&"glided")
 					_play_tail_sound()
 		# Jump Buffer
