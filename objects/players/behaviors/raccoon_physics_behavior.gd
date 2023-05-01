@@ -1,16 +1,25 @@
 extends ByNodeScript
 
+signal glided
+
 var player: Player
 var suit: PlayerSuit
 var config: PlayerConfig
 
+const tail_sound = preload("res://modules/raccoon/objects/players/prefabs/sounds/tail.wav")
+
 var _has_jumped: bool
+var jump_glide_timer: float
+
+var fly_max_walk_speed: float = 150
 
 
 func _ready() -> void:
 	player = node as Player
 	suit = node.suit
 	config = suit.physics_config
+	if !player.has_user_signal("glided"):
+		player.add_user_signal("glided")
 	player.underwater.got_into_water.connect(player.set.bind(&"is_underwater", true), CONNECT_REFERENCE_COUNTED)
 	player.underwater.got_out_of_water.connect(player.set.bind(&"is_underwater", false), CONNECT_REFERENCE_COUNTED)
 
@@ -54,7 +63,11 @@ func _movement_x(delta: float) -> void:
 		player.speed.x = player.direction * config.walk_initial_speed
 	# Acceleration
 	if player.left_right == player.direction:
-		var max_speed: float = config.underwater_walk_max_walking_speed if player.is_underwater else (config.walk_max_running_speed if player.running else config.walk_max_walking_speed)
+		var max_speed: float
+		if !suit.extra_vars.p_flying:
+			max_speed = config.underwater_walk_max_walking_speed if player.is_underwater else (config.walk_max_running_speed if player.running else config.walk_max_walking_speed)
+		else:
+			max_speed = (config.walk_max_walking_speed if player.running else fly_max_walk_speed)
 		_accelerate(max_speed, config.walk_acceleration, delta)
 	elif player.left_right == -player.direction:
 		_decelerate(config.walk_turning_acce, delta)
@@ -69,6 +82,7 @@ func _movement_y(delta: float) -> void:
 	
 	# Swimming
 	if player.is_underwater:
+		suit.extra_vars.p_flying = false
 		if player.jumped:
 			player.jump(config.swim_out_speed if player.is_underwater_out else config.swim_speed)
 			player.swam.emit()
@@ -77,16 +91,54 @@ func _movement_y(delta: float) -> void:
 			player.speed.y = lerp(player.speed.y, -abs(config.swim_max_speed), 0.125)
 	# Jumping
 	else:
+		# Normal Jumping
 		if player.is_on_floor():
 			if player.jumping > 0 && !_has_jumped:
 				_has_jumped = true
 				player.jump(config.jump_speed)
 				Audio.play_sound(config.sound_jump, player, false, {pitch = suit.sound_pitch})
+		# Raccoon Glide
+		elif player.jumped:
+			if suit.extra_vars.can_fly:
+				suit.extra_vars.p_flying = true
+			if (!suit.extra_vars.can_fly && player.speed.y > -50) || \
+				suit.extra_vars.p_flying:
+					jump_glide_timer = 0.4
+					glided.emit()
+					_play_tail_sound()
+		# Jump Buffer
 		elif player.jumping > 0 && player.speed.y < 0:
 			var buff: float = config.jump_buff_dynamic if abs(player.speed.x) > 10 else config.jump_buff_static
 			player.speed.y -= abs(buff) * delta
+		# Raccoon Gliding in process
+		if !player.is_on_floor() && jump_glide_timer > 0:
+			# Do not glide if not falling
+			if !suit.extra_vars.p_flying || !suit.extra_vars.p_running:
+				player.vel_set_y(75)
+				if player.speed.y < -50:
+					jump_glide_timer = 0
+					return
+			else:
+				player.vel_set_y(min(-fly_max_walk_speed, player.speed.y))
+			jump_glide_timer = max(jump_glide_timer - delta, 0)
+			
 	if !player.jumping:
 		_has_jumped = false
+	# Reset Raccoon Gliding
+	if player.is_on_floor():
+		suit.extra_vars.p_flying = false
+		suit.extra_vars.can_fly = false
+		jump_glide_timer = 0
+
+
+var delay: bool = false
+func _play_tail_sound() -> void:
+	if delay: return
+	Audio.play_sound(tail_sound, player, false)
+	delay = true
+	await player.get_tree().create_timer(0.3, false).timeout
+	if !is_instance_valid(self): return
+	delay = false
 
 
 #= Shape
@@ -123,6 +175,7 @@ func _body_process() -> void:
 		var result: Dictionary = enemy_attacked.got_stomped(player)
 		if result.is_empty(): return
 		if result.result == true:
+			jump_glide_timer = 0
 			if player.jumping > 0:
 				player.speed.y = -result.jumping_max * config.jump_stomp_multiplicator
 			else:

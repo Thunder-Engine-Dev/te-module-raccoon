@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="PlayerSuit" load_steps=18 format=3 uid="uid://bp0b8h1elf8gm"]
+[gd_resource type="Resource" script_class="PlayerSuit" load_steps=20 format=3 uid="uid://bp0b8h1elf8gm"]
 
 [ext_resource type="Script" path="res://modules/raccoon/objects/players/behaviors/raccoon_animation_behavior.gd" id="1_wspk3"]
 [ext_resource type="SpriteFrames" uid="uid://c2x3m8e3m7txx" path="res://modules/raccoon/objects/players/prefabs/animations/mario/animation_mario_raccoon.tres" id="2_8m773"]
@@ -11,7 +11,9 @@
 [ext_resource type="Script" path="res://modules/raccoon/objects/players/behaviors/raccoon_physics_behavior.gd" id="7_ggear"]
 [ext_resource type="Resource" uid="uid://513ld6k2bccl" path="res://engine/objects/players/prefabs/shapers/shaper_mario_super.tres" id="7_iyxhp"]
 [ext_resource type="Resource" uid="uid://dgtnm5aove1kg" path="res://engine/objects/players/prefabs/shapers/shaper_mario_small.tres" id="8_3wsjs"]
+[ext_resource type="Script" path="res://modules/raccoon/objects/players/behaviors/raccoon_extra_behavior.gd" id="8_6xvi2"]
 [ext_resource type="Resource" uid="uid://rhicphrr05ws" path="res://engine/objects/players/prefabs/configs/config_mario_default.tres" id="8_h8fwb"]
+[ext_resource type="PackedScene" uid="uid://c7pg6866h2tjs" path="res://modules/raccoon/components/hud/p_meter.tscn" id="9_2krdf"]
 [ext_resource type="Script" path="res://engine/objects/players/player_suit.gd" id="9_q4tno"]
 [ext_resource type="AudioStream" uid="uid://cpy66lof7ycli" path="res://engine/objects/players/prefabs/sounds/music-die.ogg" id="10_g14eq"]
 [ext_resource type="AudioStream" uid="uid://c4mxnbmb5vv2u" path="res://engine/objects/players/prefabs/sounds/pipe.wav" id="11_tkrcy"]
@@ -50,7 +52,13 @@ animation_sprites = ExtResource("2_8m773")
 animation_behavior = ExtResource("1_wspk3")
 behavior_resource = SubResource("Resource_cr4jy")
 behavior_script = ExtResource("7_fodgc")
-extra_vars = {}
+extra_vars = {
+"can_fly": false,
+"hud": ExtResource("9_2krdf"),
+"p_flying": false,
+"p_running": false
+}
+extra_behavior = ExtResource("8_6xvi2")
 sound_hurt = ExtResource("11_tkrcy")
 sound_death = ExtResource("10_g14eq")
 sound_pitch = 1.0

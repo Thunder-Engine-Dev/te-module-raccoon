@@ -1,0 +1,45 @@
+[gd_scene load_steps=6 format=3 uid="uid://c7pg6866h2tjs"]
+
+[ext_resource type="Texture2D" uid="uid://cjsdp26tt2o1w" path="res://modules/raccoon/components/hud/textures/p_meter.png" id="1_icudy"]
+[ext_resource type="Texture2D" uid="uid://cl0erspwowquu" path="res://modules/raccoon/components/hud/textures/p_meter_full.png" id="2_mp0b5"]
+[ext_resource type="Texture2D" uid="uid://bcuxth5s11dce" path="res://modules/raccoon/components/hud/textures/p_fly.png" id="3_s26xw"]
+[ext_resource type="Texture2D" uid="uid://2wtn46ickk5c" path="res://modules/raccoon/components/hud/textures/p_fly_2.png" id="4_1q1ip"]
+
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_mqcu1"]
+frames = 2
+speed_scale = 0.0
+frame_0/texture = ExtResource("3_s26xw")
+frame_0/duration = 0.1
+frame_1/texture = ExtResource("4_1q1ip")
+frame_1/duration = 0.1
+
+[node name="PMeter" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.2
+anchor_top = 1.0
+anchor_right = 0.2
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -32.0
+offset_right = 4.0
+offset_bottom = -16.0
+max_value = 6.0
+texture_under = ExtResource("1_icudy")
+texture_progress = ExtResource("2_mp0b5")
+
+[node name="TextureRect" type="TextureRect" parent="TextureProgressBar"]
+layout_mode = 0
+offset_left = 83.0
+offset_top = -1.0
+offset_right = 101.0
+offset_bottom = 17.0
+texture = SubResource("AnimatedTexture_mqcu1")

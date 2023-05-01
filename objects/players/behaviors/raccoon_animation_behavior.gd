@@ -1,12 +1,14 @@
 extends ByNodeScript
 
 var player: Player
+var suit: PlayerSuit
 var sprite: AnimatedSprite2D
 
 
 func _ready() -> void:
 	player = node as Player
-	sprite = node.sprite as AnimatedSprite2D
+	suit = player.suit as PlayerSuit
+	sprite = player.sprite as AnimatedSprite2D
 	
 	# Connect animation signals for the current powerup
 	player.suit_appeared.connect(_suit_appeared)
@@ -16,10 +18,14 @@ func _ready() -> void:
 	
 	sprite.animation_looped.connect(_sprite_loop)
 	sprite.animation_finished.connect(_sprite_finish)
+	
+	await player.get_tree().physics_frame
+	player.connect(&"glided", _glided)
 
 
 func _physics_process(delta: float) -> void:
 	delta = player.get_physics_process_delta_time()
+	# node.suit.extra_vars.p_flying
 	_animation_process(delta)
 
 
@@ -50,8 +56,14 @@ func _sprite_loop() -> void:
 
 func _sprite_finish() -> void:
 	if !sprite: return
-	if sprite.animation == &"attack": sprite.play(&"default")
-	if sprite.animation == &"attack_tail": sprite.play(&"default")
+	if sprite.animation in [&"attack", &"attack_tail"]: sprite.play(&"default")
+
+
+func _glided() -> void:
+	if !sprite: return
+	print('hi')
+	if sprite.animation == &"jump": sprite.play(&"jump_tail")
+	if sprite.animation == &"p_jump": sprite.play(&"p_fly")
 
 
 func _animation_process(delta: float) -> void:
@@ -66,7 +78,10 @@ func _animation_process(delta: float) -> void:
 		if sprite.animation in [&"appear", &"attack", &"attack_tail"]: return
 		if player.is_on_floor():
 			if player.speed.x != 0:
-				sprite.play(&"walk")
+				sprite.play(&"p_run" if (
+					suit.extra_vars.p_running &&
+					abs(player.speed.x) > suit.physics_config.walk_max_walking_speed
+				) else &"walk")
 				sprite.speed_scale = clampf(abs(player.speed.x) * delta * 1.5, 1, 5)
 			else:
 				sprite.play(&"default")
@@ -74,8 +89,13 @@ func _animation_process(delta: float) -> void:
 				sprite.play(&"crouch")
 		elif player.is_underwater:
 			sprite.play(&"swim")
-		elif !sprite.animation in [&"p_fly", &"p_jump"]:
-			sprite.play(&"jump")
+		else:
+			if !suit.extra_vars.p_running:
+				sprite.play(&"jump")
+			elif player.jumped && sprite.animation != &"p_fly":
+				sprite.play(&"p_fly")
+			else:
+				sprite.play(&"p_jump")
 	# Warping
 	else:
 		match player.warp_dir:

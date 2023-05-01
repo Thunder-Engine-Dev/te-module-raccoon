@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://ckjottuny44xy"]
+[gd_scene load_steps=9 format=3 uid="uid://ckjottuny44xy"]
 
 [ext_resource type="Script" path="res://modules/raccoon/objects/powerups/raccoon_leaf/raccoon_leaf.gd" id="1_b3x4t"]
 [ext_resource type="Resource" uid="uid://bp0b8h1elf8gm" path="res://modules/raccoon/objects/players/prefabs/suits/mario/suit_mario_raccoon.tres" id="2_tqnhn"]
 [ext_resource type="AudioStream" uid="uid://c162tqddc8eej" path="res://engine/objects/bumping_blocks/_sounds/bump.wav" id="3_jxllc"]
 [ext_resource type="Texture2D" uid="uid://cura6nrjr80f6" path="res://modules/raccoon/objects/powerups/raccoon_leaf/texture.png" id="4_3u8ih"]
+[ext_resource type="AudioStream" uid="uid://bliafun8grmq3" path="res://modules/raccoon/objects/players/prefabs/sounds/appear.wav" id="4_egaka"]
 [ext_resource type="Script" path="res://engine/scripts/nodes/vision/vision.gd" id="4_p5qvh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_w2yun"]
@@ -30,6 +31,7 @@ to_suit = {
 "Mario": ExtResource("2_tqnhn")
 }
 appearing_sound = ExtResource("3_jxllc")
+pickup_powerup_sound = ExtResource("4_egaka")
 gravity_scale = 0.5
 metadata/_edit_pinned_properties_ = [&"to_suit"]
 
