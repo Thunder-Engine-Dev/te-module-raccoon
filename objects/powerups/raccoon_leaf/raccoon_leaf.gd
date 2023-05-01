@@ -13,6 +13,7 @@ func appear_process(delta: float) -> void:
 		.set_trans(Tween.TRANS_QUAD)
 	tw.tween_callback(func():
 		appear_distance = 0
+		z_index = 5
 	)
 
 

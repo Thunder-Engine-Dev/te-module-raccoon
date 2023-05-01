@@ -104,7 +104,7 @@ func _movement_y(delta: float) -> void:
 			if (!suit.extra_vars.can_fly && player.speed.y > -50) || \
 				suit.extra_vars.p_flying:
 					jump_glide_timer = 0.4
-					glided.emit()
+					player.emit_signal(&"glided")
 					_play_tail_sound()
 		# Jump Buffer
 		elif player.jumping > 0 && player.speed.y < 0:
@@ -114,7 +114,7 @@ func _movement_y(delta: float) -> void:
 		if !player.is_on_floor() && jump_glide_timer > 0:
 			# Do not glide if not falling
 			if !suit.extra_vars.p_flying || !suit.extra_vars.p_running:
-				player.vel_set_y(75)
+				player.vel_set_y(min(75, player.speed.y))
 				if player.speed.y < -50:
 					jump_glide_timer = 0
 					return

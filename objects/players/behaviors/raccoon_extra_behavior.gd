@@ -43,7 +43,7 @@ func _p_meter_process(delta: float) -> void:
 				suit.extra_vars.p_running = false
 			if !player.is_on_floor():
 				suit.extra_vars.can_fly = true
-				p_fly_counter = 150 # 3 seconds
+				p_fly_counter = 175 # about 3.5 seconds of free flying time
 			else:
 				if !player.running:
 					p_counter = 80
@@ -68,14 +68,14 @@ func _p_meter_process(delta: float) -> void:
 		p_counter = max(p_counter - 40 * delta, 0)
 	
 	# Initialize P run
-	if p_counter > 100:
+	if p_counter > 102:
 		suit.extra_vars.p_running = true
 		p_fly_counter = 0
 		_p_meter_sound_loop()
 	
 	# HUD behavior
 	if !hud: return
-	hud_progress.value = ceili(p_counter / 16)
+	hud_progress.value = ceili(p_counter / 17)
 	hud_fly_icon.texture.speed_scale = 0
 	hud_fly_icon.texture.current_frame = 1
 
