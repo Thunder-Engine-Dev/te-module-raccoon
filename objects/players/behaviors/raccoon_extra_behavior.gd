@@ -24,7 +24,7 @@ func _ready() -> void:
 	hud_progress = hud.get_node("TextureProgressBar")
 	hud_fly_icon = hud_progress.get_node("TextureRect")
 	hud_fly_icon.texture.speed_scale = 0
-	hud_fly_icon.texture.current_frame = 1
+	hud_fly_icon.texture.current_frame = 0
 
 func _physics_process(delta: float) -> void:
 	delta = player.get_physics_process_delta_time()
@@ -77,7 +77,7 @@ func _p_meter_process(delta: float) -> void:
 	if !hud: return
 	hud_progress.value = ceili(p_counter / 17)
 	hud_fly_icon.texture.speed_scale = 0
-	hud_fly_icon.texture.current_frame = 1
+	hud_fly_icon.texture.current_frame = 0
 
 
 func _p_meter_sound_loop() -> void:
